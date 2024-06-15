@@ -4,6 +4,26 @@ import {ref} from "vue"
 
 const todoRef = ref("");
 const todoListRef = ref([]);
+
+const editTodo = () => {
+  const todo = todoListRef.value.find(
+      (todo) => todo.id === editId
+  );
+
+  const idx = todoListRef.value.findIndex(
+      (todo) => todo.id === editId
+  );
+
+  todo.task = todoRef.value;
+
+  todoListRef.value.splice(idx, 1, todo);
+  localStorage.todoList = JSON.stringify(todoListRef.value);
+  isEditRef.value = false;
+  editId = -1;
+
+  todoRef.value = "";
+};
+
 const ls = localStorage.todoList;
 todoListRef.value = ls ? JSON.parse(ls) : [];
 
@@ -14,6 +34,16 @@ const addTodo = () => {
 
   todoRef.value = "";
 };
+
+const isEditRef = ref(false);
+let editId = -1;
+
+const showTodo = (id) => {
+  const todo = todoListRef.value.find((todo) => todo.id === id);
+  todoRef.value = todo.task;
+  isEditRef.value = true;
+  editId = id;
+}
 </script>
 
 <template>
@@ -24,7 +54,8 @@ const addTodo = () => {
         v-model="todoRef"
         placeholder="+ TODOを入力"
     >
-    <button class="btn" @click="addTodo">追加</button>
+    <button class="btn green" @click="editTodo" v-if="isEditRef">変更</button>
+    <button class="btn" @click="addTodo" v-else>追加</button>
   </div>
 
   <div class="box_list">
@@ -34,15 +65,12 @@ const addTodo = () => {
         <label>{{ todo.task }}</label>
       </div>
       <div class="btns">
-        <button class="btn green">編</button>
+        <button class="btn green" @click="showTodo(todo.id)">編</button>
         <button class="btn pink">削</button>
       </div>
     </div>
   </div>
 
-  <div v-for="(example,index) in todoExample" :key="index">
-    <p>{{ index }}.{{ example }}</p>
-  </div>
 </template>
 
 <style scoped>
