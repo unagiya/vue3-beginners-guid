@@ -9,7 +9,7 @@ const editTodo = () => {
   const todo = todoListRef.value.find(
       (todo) => todo.id === editId
   );
-
+//色が変わるか確認。
   const idx = todoListRef.value.findIndex(
       (todo) => todo.id === editId
   );
@@ -24,6 +24,16 @@ const editTodo = () => {
   todoRef.value = "";
 };
 
+const deleteTodo = (id) => {
+  const todo = todoListRef.value.find((todo) => todo.id === id);
+  const idx = todoListRef.value.findIndex((todo) => todo.id === id);
+
+  const delMsg = '['+ todo.task + ']を削除しますか？';
+  if (!confirm(delMsg)) return;
+
+  todoListRef.value.splice(idx, 1);
+  localStorage.todoList = JSON.stringify(todoListRef.value);
+}
 const ls = localStorage.todoList;
 todoListRef.value = ls ? JSON.parse(ls) : [];
 
@@ -66,7 +76,7 @@ const showTodo = (id) => {
       </div>
       <div class="btns">
         <button class="btn green" @click="showTodo(todo.id)">編</button>
-        <button class="btn pink">削</button>
+        <button class="btn pink" @click="deleteTodo(todo.id)">削</button>
       </div>
     </div>
   </div>
