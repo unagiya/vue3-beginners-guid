@@ -7,7 +7,7 @@ services:
     environment:
       - NODE_ENV=development
     volumes:
-      - ./vueApp:/usr/src/app
-    command: sh -c "cd vue-sample && npm run dev"
+      - ./vueApp/vue-sample:/usr/src/app
+    command: sh -c "npm run dev"
     ports:
       - "8080:5173"
