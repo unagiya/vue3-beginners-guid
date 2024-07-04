@@ -5,9 +5,10 @@ import {useTodoList} from '@/composables/useTodoList.js';
 const todoRef = ref('');
 const isEditRef = ref(false);
 
-const {todoListRef, add, show, edit, del, check} = useTodoList();
+const {todoListRef, add, show, edit, del, check, countFin} = useTodoList();
 
 //const todoListRef = ref([]);
+
 
 const addTodo = () => {
   add(todoRef.value);
@@ -36,6 +37,10 @@ const changeCheck = (id) => {
 </script>
 
 <template>
+  <div class="finCount">
+    <span>完了:{{ countFin }}</span>
+    <span>未完了:</span>
+  </div>
   <div class="box_input">
     <input
         type="text"
@@ -49,8 +54,13 @@ const changeCheck = (id) => {
 
   <div class="box_list">
     <div class="todo_list" v-for="todo in todoListRef" :key="todo.id">
-      <div class="todo">
-        <input type="checkbox" class="check">
+      <div class="todo" :class="{fin: todo.checked}">
+        <input
+            type="checkbox"
+            class="check"
+            @change="changeCheck(todo.id)"
+            :checked="todo.checked"
+        />
         <label>{{ todo.task }}</label>
       </div>
       <div class="btns">
@@ -125,5 +135,15 @@ const changeCheck = (id) => {
   background-color: #ff4081;
 }
 
+.fin {
+  text-decoration: line-through;
+  background-color: #ddd;
+  color: #777;
+}
+
+.finCount {
+  margin-top: 8px;
+  font-size: 0.8em;
+}
 
 </style>

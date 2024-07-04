@@ -1,4 +1,4 @@
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 
 const todoListRef = ref([]);
 
@@ -11,7 +11,7 @@ export const useTodoList = (id) => {
 
     const add = (task) => {
         const id = new Date().getTime();
-        todoListRef.value.push({id: id, task: task});
+        todoListRef.value.push({id: id, task: task, checked: false});
         localStorage.todoList = JSON.stringify(todoListRef.value);
     };
 
@@ -50,11 +50,17 @@ export const useTodoList = (id) => {
         const idx = findIndexById(id);
         todo.checked = !todo.checked;
 
+        console.log(todo)
         todoListRef.value.splice(idx, 1, todo);
         localStorage.todoList = JSON.stringify(todoListRef.value);
     };
 
-    return {todoListRef, add, show, edit, del, check}
+    const countFin = computed(() => {
+        const finArr = todoListRef.value.filter((todo) => todo.checked)
+        return finArr.length;
+    });
+
+    return {todoListRef, add, show, edit, del, check, countFin}
 }
 
 const findById = (id) => {
